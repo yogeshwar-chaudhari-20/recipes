@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Recipes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            night: '#0D110E',
+            panel: '#151B17',
+            ink: '#E7EDE3',
+            sage: '#B9D19F',
+            moss: '#7E9770'
+          },
+          fontFamily: {
+            display: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; color-scheme: dark; }
+    body { -webkit-font-smoothing: antialiased; }
+
+    .step-list { counter-reset: step; }
+    .step-list > li { counter-increment: step; }
+    .step-list > li::before {
+      content: counter(step);
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(185, 209, 159, .3);
+      color: #B9D19F;
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: .85rem;
+      margin-top: .15rem;
+    }
+
+    .recipe-article { transition: box-shadow .35s ease, background-color .35s ease; }
+    .surprise-ring {
+      box-shadow: 0 0 0 2px #B9D19F;
+      background-color: #18201B;
+    }
+
+    header nav a[aria-current="true"] { color: #B9D19F; }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .recipe-article { transition: none; }
+    }
+  </style>
+</head>
+
+<body class="bg-night font-sans text-ink">
+
+  <!-- ===== HEADER ===== -->
+  <header class="sticky top-0 z-40 border-b border-white/10 bg-night/90 backdrop-blur">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <div class="flex h-16 items-center justify-between gap-4">
+        <a href="#top" class="flex items-center gap-2.5" aria-label="Back to top">
+          <span class="grid h-8 w-8 place-items-center rounded-full border border-sage/30 text-sage">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+            </svg>
+          </span>
+          <span class="font-display text-lg font-medium tracking-tight">Recipes</span>
+        </a>
+
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Recipes">
+          <a href="#broccoli-cauliflower" class="rounded-full px-3 py-2 text-sm text-ink/60 transition hover:text-ink">Broccoli</a>
+          <a href="#lentil" class="rounded-full px-3 py-2 text-sm text-ink/60 transition hover:text-ink">Lentil</a>
+          <a href="#chickpea" class="rounded-full px-3 py-2 text-sm text-ink/60 transition hover:text-ink">Chickpea</a>
+          <a href="#zucchini" class="rounded-full px-3 py-2 text-sm text-ink/60 transition hover:text-ink">Zucchini Salad</a>
+          <a href="#sandwich" class="rounded-full px-3 py-2 text-sm text-ink/60 transition hover:text-ink">Sandwich</a>
+        </nav>
+
+        <button type="button" data-surprise title="Press S" class="inline-flex items-center gap-2 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-night transition hover:bg-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-night">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="4" />
+            <circle cx="8.5" cy="8.5" r="1.1" fill="currentColor" stroke="none" />
+            <circle cx="15.5" cy="15.5" r="1.1" fill="currentColor" stroke="none" />
+            <circle cx="15.5" cy="8.5" r="1.1" fill="currentColor" stroke="none" />
+            <circle cx="8.5" cy="15.5" r="1.1" fill="currentColor" stroke="none" />
+          </svg>
+          Surprise me
+        </button>
+      </div>
+
+      <nav class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-3 md:hidden" aria-label="Recipes">
+        <a href="#broccoli-cauliflower" class="whitespace-nowrap rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-ink/70">Broccoli</a>
+        <a href="#lentil" class="whitespace-nowrap rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-ink/70">Lentil</a>
+        <a href="#chickpea" class="whitespace-nowrap rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-ink/70">Chickpea</a>
+        <a href="#zucchini" class="whitespace-nowrap rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-ink/70">Zucchini Salad</a>
+        <a href="#sandwich" class="whitespace-nowrap rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-ink/70">Sandwich</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6 sm:pt-14">
+
+    <!-- ===== 1. BROCCOLI & CAULIFLOWER ===== -->
+    <article id="broccoli-cauliflower" data-recipe-article data-name="Air Fried Broccoli and Cauliflower Salad" class="recipe-article scroll-mt-28 rounded-3xl border border-white/10 bg-panel p-4 sm:p-6 lg:p-8">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+        <div>
+          <img
+            src="images/broccoli-cauliflower.jpg"
+            alt="Air fried broccoli and cauliflower with seeds"
+            class="aspect-[4/3] w-full rounded-2xl object-cover lg:aspect-[4/5]"
+            fetchpriority="high"
+          />
+        </div>
+
+        <div>
+          <p class="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.14em] text-sage">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-3 w-3" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.5l-5.9 3.2 1.2-6.6L2.5 9.5l6.6-.9L12 2.5z" /></svg>
+            My Favourite:
+          </p>
+
+          <div class="mt-2 flex flex-wrap items-start justify-between gap-3">
+            <h2 class="font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl">Air Fried Broccoli and Cauliflower Salad</h2>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sage/30 px-3 py-1.5 text-sm font-medium text-sage">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+              </svg>
+              25 min
+            </span>
+          </div>
+
+          <p class="mt-3 text-sm text-ink/50">Prep 5 min · Soak 5–10 min · Air fry 10–12 min</p>
+
+          <ol class="step-list mt-6 space-y-4 text-[15px] leading-relaxed text-ink/80">
+            <li class="flex gap-3">Boil water in ketlte -&gt; pour it over your Brockli and cauliflower until submerged for 5 - 10 mins.</li>
+            <li class="flex gap-3">Preheat the airfryer at 200 degree.</li>
+            <li class="flex gap-3">Drain florets -&gt; Quick tap with kitchen towel to remove excess moisture.</li>
+            <li class="flex gap-3">Air fry for 10–12 minutes or until lightly colored. I like mine a little charred.</li>
+            <li class="flex gap-3">Spinkle a little salt. That's it.</li>
+            <li class="flex gap-3">Optional -&gt; Add seeds of your choice -&gt; I like seaseme, or sunflower seeds. Enjoy with mustured or just as it.</li>
+          </ol>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== MEDITERRANEAN NOTE ===== -->
+    <aside class="my-10 rounded-3xl border border-white/10 bg-panel px-5 py-6 sm:px-8 sm:py-7">
+      <h2 class="font-display text-xl font-medium tracking-tight">Mediterranean salads</h2>
+      <p class="mt-3 text-[15px] font-medium text-sage">Simple Concept: vegetables + healthy fats + Vinaigrette Dressing</p>
+      <p class="mt-2 text-[15px] leading-relaxed text-ink/70">Switch veggeis as per your liking - cucumber, red/gree/yellow pepper, red or white onion is base. Add tomatos, cherry tomotoes, carrots, avacadoes, radishes, rocket leaves. Whatever you want.</p>
+    </aside>
+
+    <!-- ===== 2. LENTIL ===== -->
+    <article id="lentil" data-recipe-article data-name="Lentil Salad." class="recipe-article scroll-mt-28 rounded-3xl border border-white/10 bg-panel p-4 sm:p-6 lg:p-8">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+        <div>
+          <img src="images/lentil.jpg" alt="Lentil salad with cucumber, red pepper, herbs and feta" class="aspect-[4/3] w-full rounded-2xl object-cover lg:aspect-[4/5]" decoding="async" />
+        </div>
+
+        <div>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <h2 class="font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl">Lentil Salad.</h2>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sage/30 px-3 py-1.5 text-sm font-medium text-sage">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+              </svg>
+              15 min
+            </span>
+          </div>
+
+          <p class="mt-3 text-sm text-ink/50">Prep 15 min · No cook</p>
+
+          <ol class="step-list mt-6 space-y-4 text-[15px] leading-relaxed text-ink/80">
+            <li class="flex gap-3">Drain and rinse the cooked canned lentils, pat them dry with a paper towel (better but optional) then transfer them to a large mixing bowl.</li>
+            <li class="flex gap-3">Finely dice the cucumber, red bell pepper, and red onion.</li>
+            <li class="flex gap-3">Chop the fresh coriander leaves and mint.</li>
+            <li class="flex gap-3">Whisk together the olive oil, lemon juice, Dijon mustard, honey, minced garlic, salt, and pepper in a small bowl or jar until smooth.</li>
+            <li class="flex gap-3">Add the diced vegetables, chopped herbs, and feta cheese (it's naturally salty so adjust salt accordingly) or cottage cheese (optional) to the lentils, drizzle with the dressing, and toss everything together until well combined.</li>
+          </ol>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== 3. CHICKPEA ===== -->
+    <article id="chickpea" data-recipe-article data-name="Chickpea Salad" class="recipe-article mt-6 scroll-mt-28 rounded-3xl border border-white/10 bg-panel p-4 sm:mt-8 sm:p-6 lg:p-8">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+        <div>
+          <img src="images/chickpea.jpg" alt="Chickpea salad with tomatoes, cucumber, greens and corn" class="aspect-[4/3] w-full rounded-2xl object-cover lg:aspect-[4/5]" decoding="async" />
+        </div>
+
+        <div>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <h2 class="font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl">Chickpea Salad</h2>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sage/30 px-3 py-1.5 text-sm font-medium text-sage">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+              </svg>
+              15 min
+            </span>
+          </div>
+
+          <p class="mt-3 text-sm text-ink/50">Prep 15 min · No cook</p>
+
+          <ol class="step-list mt-6 space-y-4 text-[15px] leading-relaxed text-ink/80">
+            <li class="flex gap-3">Drain and rinse the cooked canned chickpeas, pat them dry with a paper towel (better but optional), then transfer them to a large mixing bowl.</li>
+            <li class="flex gap-3">Finely dice the cucumber, red bell pepper, red onion, and halved Kalamata olives (optional).</li>
+            <li class="flex gap-3">Chop the fresh coriander (or parsley) leaves and mint (optional).</li>
+            <li class="flex gap-3">Whisk together the olive oil, lemon juice, white wine vinegar (optional), crushed red pepper flakes (optional), minced garlic (optional), salt, and pepper in a small bowl or jar until smooth.</li>
+            <li class="flex gap-3">Add the diced vegetables, chopped herbs, and feta cheese (it's naturally salty so adjust salt accordingly) (optional) to the chickpeas, drizzle with the dressing, and toss everything together until well combined.</li>
+          </ol>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== 4. ZUCCHINI ===== -->
+    <article id="zucchini" data-recipe-article data-name="Zucchini Salad" class="recipe-article mt-6 scroll-mt-28 rounded-3xl border border-white/10 bg-panel p-4 sm:mt-8 sm:p-6 lg:p-8">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+        <div>
+          <img src="images/zucchini.jpg" alt="Air fried zucchini with herbs and crumbled feta" class="aspect-[4/3] w-full rounded-2xl object-cover lg:aspect-[4/5]" decoding="async" />
+        </div>
+
+        <div>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <h2 class="font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl">Zucchini Salad</h2>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sage/30 px-3 py-1.5 text-sm font-medium text-sage">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+              </svg>
+              25 min
+            </span>
+          </div>
+
+          <p class="mt-3 text-sm text-ink/50">Prep 10 min · Air fry 10–12 min</p>
+
+          <ol class="step-list mt-6 space-y-4 text-[15px] leading-relaxed text-ink/80">
+            <li class="flex gap-3">Slice the zucchini and toss in a bowl with 1 to 2 tablespoons of olive oil, salt, pepper, and dried oregano or cumin.</li>
+            <li class="flex gap-3">Preheat your air fryer to 400°F (200°C), add the zucchini in a single layer, and air fry for 10 to 12 minutes, shaking halfway through until tender.</li>
+            <li class="flex gap-3">Toss cherry tomatoes into the air fryer basket for the last 3 to 4 minutes of cooking (optional).</li>
+            <li class="flex gap-3">Transfer the warm air-fried zucchini and tomatoes to a bowl, then add the sliced red onion and Kalamata olives (optional).</li>
+            <li class="flex gap-3">Add the fresh parsley (or coriander) and mint (optional), whisk or drizzle with the olive oil, lemon juice, and feta cheese (it's naturally salty so adjust salt accordingly) (optional), then toss everything together until well combined.</li>
+          </ol>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== 5. SANDWICH ===== -->
+    <article id="sandwich" data-recipe-article data-name="Sandwich" class="recipe-article mt-6 scroll-mt-28 rounded-3xl border border-white/10 bg-panel p-4 sm:mt-8 sm:p-6 lg:p-8">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-10">
+        <div>
+          <div class="aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#101610] lg:aspect-[4/5]" role="img" aria-label="Illustration of a layered sandwich with avocado, tuna, cucumber, tomato, onion and a fried egg">
+            <svg viewBox="0 0 400 500" class="h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <rect width="400" height="500" fill="#101610" />
+              <circle cx="200" cy="240" r="156" fill="none" stroke="#B9D19F" stroke-opacity=".1" stroke-width="1.5" />
+              <circle cx="200" cy="240" r="120" fill="none" stroke="#B9D19F" stroke-opacity=".07" stroke-width="1.5" />
+
+              <!-- plate -->
+              <ellipse cx="200" cy="398" rx="152" ry="24" fill="#0C100D" />
+              <ellipse cx="200" cy="390" rx="158" ry="26" fill="#1A221B" />
+              <ellipse cx="200" cy="386" rx="132" ry="18" fill="#141B15" />
+
+              <!-- bread (bottom) -->
+              <rect x="78" y="306" width="210" height="64" rx="26" fill="#C99B5E" />
+              <rect x="78" y="306" width="210" height="10" rx="5" fill="#B9844B" opacity=".5" />
+              <rect x="78" y="352" width="210" height="18" rx="9" fill="#B9844B" opacity=".55" />
+
+              <!-- fillings -->
+              <rect x="78" y="290" width="210" height="18" rx="6" fill="#9CB96B" />
+              <rect x="78" y="270" width="210" height="22" rx="7" fill="#C4AA91" />
+              <circle cx="100" cy="288" r="10" fill="#A9C981" />
+              <circle cx="128" cy="288" r="10" fill="#A9C981" />
+              <circle cx="156" cy="288" r="10" fill="#A9C981" />
+              <circle cx="184" cy="288" r="10" fill="#A9C981" />
+              <circle cx="212" cy="288" r="10" fill="#A9C981" />
+              <circle cx="240" cy="288" r="10" fill="#A9C981" />
+              <circle cx="268" cy="288" r="10" fill="#A9C981" />
+
+              <circle cx="112" cy="262" r="15" fill="#C4693F" />
+              <circle cx="112" cy="262" r="9" fill="#D98A62" opacity=".7" />
+              <circle cx="167" cy="262" r="15" fill="#C4693F" />
+              <circle cx="167" cy="262" r="9" fill="#D98A62" opacity=".7" />
+              <circle cx="222" cy="262" r="15" fill="#C4693F" />
+              <circle cx="222" cy="262" r="9" fill="#D98A62" opacity=".7" />
+              <circle cx="277" cy="262" r="15" fill="#C4693F" />
+              <circle cx="277" cy="262" r="9" fill="#D98A62" opacity=".7" />
+
+              <circle cx="140" cy="248" r="17" fill="none" stroke="#BFA1C0" stroke-width="3" opacity=".85" />
+              <circle cx="198" cy="248" r="17" fill="none" stroke="#BFA1C0" stroke-width="3" opacity=".85" />
+              <circle cx="256" cy="248" r="17" fill="none" stroke="#BFA1C0" stroke-width="3" opacity=".85" />
+
+              <!-- bread (top) -->
+              <rect x="72" y="168" width="222" height="68" rx="32" fill="#D2A468" />
+              <rect x="72" y="168" width="222" height="14" rx="7" fill="#E0B77E" opacity=".55" />
+              <path d="M100 196c18-8 34-8 52 0M176 196c18-8 34-8 52 0M232 196c10-4 20-4 30 0" stroke="#B9844B" stroke-width="3" stroke-linecap="round" opacity=".45" fill="none" />
+
+              <!-- fried egg -->
+              <ellipse cx="318" cy="330" rx="46" ry="34" fill="#EDE9DE" />
+              <ellipse cx="318" cy="330" rx="46" ry="34" fill="#D8D2C2" opacity=".35" />
+              <circle cx="318" cy="327" r="17" fill="#E5B04A" />
+              <circle cx="313" cy="322" r="5" fill="#F0C878" opacity=".8" />
+
+              <!-- garnish -->
+              <path d="M300 172c10-14 24-18 36-16-2 14-12 24-26 26" fill="#7E9770" opacity=".8" />
+              <path d="M312 190c-6-10-16-14-26-14 2 10 8 17 18 20" fill="#9CB96B" opacity=".7" />
+              <circle cx="82" cy="148" r="2.5" fill="#B9D19F" opacity=".35" />
+              <circle cx="330" cy="120" r="2" fill="#B9D19F" opacity=".25" />
+              <circle cx="64" cy="250" r="2" fill="#B9D19F" opacity=".2" />
+            </svg>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <h2 class="font-display text-2xl font-medium leading-tight tracking-tight sm:text-3xl">Sandwich</h2>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-sage/30 px-3 py-1.5 text-sm font-medium text-sage">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+              </svg>
+              20 min
+            </span>
+          </div>
+
+          <p class="mt-3 text-sm text-ink/50">Prep 10 min · Cook 10 min</p>
+
+          <ol class="step-list mt-6 space-y-4 text-[15px] leading-relaxed text-ink/80">
+            <li class="flex gap-3">
+              <span>Lightly toast two slices of your favorite bread. (This bread seems nice: <a href="https://www.walmart.ca/en/ip/Country-Harvest-14-Grains-Protein-Sliced-Bread-12g-Protein-Per-Serving-No-Artificial-Preservatives-Flavours-or-Colours-600g/5LYQF6C8BTWJ?from=/search" target="_blank" rel="noopener noreferrer" class="break-all text-[13px] text-moss underline decoration-moss/40 underline-offset-2 transition hover:text-sage">https://www.walmart.ca/en/ip/Country-Harvest-14-Grains-Protein-Sliced-Bread-12g-Protein-Per-Serving-No-Artificial-Preservatives-Flavours-or-Colours-600g/5LYQF6C8BTWJ?from=/search</a>)</span>
+            </li>
+            <li class="flex gap-3">Spread a layer of pesto sauce evenly over one side of one bread slice.</li>
+            <li class="flex gap-3">Spread or layer sliced avocado (or mashed avocado) over the other slice of bread.</li>
+            <li class="flex gap-3">
+              <span>Layer your choice of flavored (change the flavour, and it's literally completely brand new sandwich) canned tuna evenly over the avocado base. (<a href="https://www.walmart.ca/en/c/kp/canned-tuna" target="_blank" rel="noopener noreferrer" class="break-all text-[13px] text-moss underline decoration-moss/40 underline-offset-2 transition hover:text-sage">https://www.walmart.ca/en/c/kp/canned-tuna</a>)</span>
+            </li>
+            <li class="flex gap-3">Top with cucumber slices, tomato slices, and red onion rings.</li>
+            <li class="flex gap-3">Add a single fried egg, press the two bread slices together, and serve.</li>
+          </ol>
+
+          <div class="mt-6 rounded-2xl border border-white/10 bg-night/40 px-4 py-4">
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-moss">Variations</p>
+            <p class="mt-1.5 text-[15px] text-ink/75">Switch tuna with air fried paneer or tofu.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <div class="mt-10 flex justify-end">
+      <a href="#top" class="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-ink/60 transition hover:border-white/25 hover:text-ink">
+        Back to top
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- ===== SURPRISE TOAST ===== -->
+  <div id="surprise-toast" class="pointer-events-none fixed inset-x-4 bottom-5 z-50 flex justify-center opacity-0 transition-all duration-300 sm:inset-x-auto sm:right-6" role="status" aria-live="polite">
+    <div class="pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl border border-sage/25 bg-panel/95 p-3 shadow-2xl backdrop-blur">
+      <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sage/15 text-sage">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+          <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z" />
+          <path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z" />
+        </svg>
+      </span>
+      <p id="surprise-name" class="min-w-0 flex-1 truncate font-display text-base text-ink">Lentil Salad.</p>
+      <button type="button" id="surprise-again" class="shrink-0 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-night transition hover:bg-ink">Again</button>
+      <button type="button" id="surprise-close" class="shrink-0 rounded-full p-1.5 text-ink/40 transition hover:bg-white/5 hover:text-ink" aria-label="Dismiss">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const recipes = [
+        { id: 'broccoli-cauliflower', name: 'Air Fried Broccoli and Cauliflower Salad' },
+        { id: 'lentil', name: 'Lentil Salad.' },
+        { id: 'chickpea', name: 'Chickpea Salad' },
+        { id: 'zucchini', name: 'Zucchini Salad' },
+        { id: 'sandwich', name: 'Sandwich' }
+      ];
+
+      const toast = document.getElementById('surprise-toast');
+      const toastName = document.getElementById('surprise-name');
+      const againBtn = document.getElementById('surprise-again');
+      const closeBtn = document.getElementById('surprise-close');
+      let lastPick = null;
+      let toastTimer = null;
+      let highlightTimer = null;
+
+      function showToast(name) {
+        toastName.textContent = name;
+        toast.classList.remove('opacity-0', 'translate-y-3');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(hideToast, 6000);
+      }
+
+      function hideToast() {
+        toast.classList.add('opacity-0', 'translate-y-3');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }
+
+      function surprise() {
+        const pool = recipes.filter(function (r) { return r.id !== lastPick; });
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        lastPick = pick.id;
+
+        const article = document.getElementById(pick.id);
+        article.classList.add('surprise-ring');
+        clearTimeout(highlightTimer);
+        highlightTimer = setTimeout(function () {
+          article.classList.remove('surprise-ring');
+        }, 2600);
+
+        article.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast(pick.name);
+
+        if (history.replaceState) {
+          history.replaceState(null, '', '#' + pick.id);
+        }
+      }
+
+      document.querySelectorAll('[data-surprise]').forEach(function (btn) {
+        btn.addEventListener('click', surprise);
+      });
+      againBtn.addEventListener('click', surprise);
+      closeBtn.addEventListener('click', hideToast);
+
+      document.addEventListener('keydown', function (e) {
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.key.toLowerCase() === 's') surprise();
+      });
+
+      const navLinks = Array.from(document.querySelectorAll('header nav a'));
+      const sections = recipes
+        .map(function (r) { return document.getElementById(r.id); })
+        .filter(Boolean);
+
+      function setActiveNav(id) {
+        navLinks.forEach(function (link) {
+          const active = link.getAttribute('href') === '#' + id;
+          if (active) {
+            link.setAttribute('aria-current', 'true');
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        });
+      }
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) setActiveNav(entry.target.id);
+          });
+        }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+        sections.forEach(function (section) { observer.observe(section); });
+      }
+    })();
+  </script>
+</body>
+</html>
